@@ -1,0 +1,67 @@
+package main;
+
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class first {
+	public static void main(String[] args) {
+		
+		System.setProperty("webdriver.chrome.driver", "C:\\EKN\\Process Data\\Selenium\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://odtuclass.metu.edu.tr/index.php"); //get the website
+		//*****************************************************************************************
+		String myWindowHandle = driver.getWindowHandle();		// takes the string value of main tab
+		System.out.println(myWindowHandle);						//prints that string value EX:CDwindow-(69AF78628A06695589C3A43A63F43879)
+		//*************************************************************************************
+		driver.manage().window().maximize();						//maximize it
+		WebElement userno = driver.findElement(By.id("login_username"));	//point the user name field
+		WebElement passw = driver.findElement(By.id("login_password"));	//point the password filed
+		
+		WebElement giris = driver.findElement(By.cssSelector("*[type^='Subm']"));	//Point the login button		
+		userno.click();												//click to enter username and enter username
+		userno.sendKeys("studentID");
+		passw.click();
+		passw.sendKeys("studentpass");									//enter password
+		new Actions(driver)											//OPENS A NEW TAB
+				.keyDown(Keys.CONTROL)
+				.click(giris)
+				.keyUp(Keys.CONTROL)
+				.build()
+				.perform();
+		driver.manage().timeouts().implicitlyWait(3 , TimeUnit.SECONDS);	//wait for the page loading
+		String UserName = driver.findElement(By.cssSelector("*[class^='page-header-headi']")).getText();	//Find the Username
+		System.out.println(UserName+ "'s login is successful");					//print the username
+		//*****************************************************************************************
+		myWindowHandle = driver.getWindowHandle();				//Should take the new tab's string value???
+		System.out.println(myWindowHandle);						//and prints it Again CDwindow-(69AF78628A06695589C3A43A63F43879)
+		driver.switchTo().window(myWindowHandle );				//And pass through to new tab but it's not working
+		//****************************************************************************************
+				
+		WebElement lecture47 = driver.findElement(By.id("label_3_19"));			//choose the course
+		lecture47.click();
+		WebElement grades = driver.findElement(By.id("label_4_24"));			//choose the grades section
+		grades.click();
+		String grade1 = driver.findElement(By.cssSelector("*[headers^='cat_5131_16511 row_11010_16511 grad']")).getText();	//find the MT1 grade field and transform it to string 
+		String expectedgrade = "59.00";																						// check the grade which is 59.00
+		if(grade1.equals(expectedgrade))																						//if they are equal
+			System.out.println("Grade has been found succesfully!! and which is "+grade1);									// print success ow. fail
+		else
+			System.out.println("fail!");
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+
+		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"nav-notification-popover-container\"]/div[1]/img")));
+		element.click();
+		System.out.println("thumbsup!");
+		//driver.close();																										//close the window
+
+
+}}
